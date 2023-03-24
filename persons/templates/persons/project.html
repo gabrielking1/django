@@ -1,0 +1,117 @@
+{% extends 'Persons/base.html' %} 
+{%load widget_tweaks%}
+{% block content %}
+{% load crispy_forms_filters%}
+{% comment %} {% for message in messages%}
+  <script>
+    alertify.set('notifier','position', 'top-left');
+    alertify.error('{{message}}');
+    </script>
+  {%endfor%} {% endcomment %}
+  <div id="main" style="margin:auto">
+    <div >
+
+        
+         
+         <form class="form-inline justify-content-center" hx-get="{% url 'projects' %}" hx-target="body" style="margin:auto !important"> 
+           {{myfilter.form|crispy}}
+           
+              
+            <button class="btn btn-info my-2 my-sm-0" type="submit">Search</button></form><br>
+            <p class="display-4 pl-4 ml-4" style="margin-left:395px !important">Projects List</p>
+         <hr style="margin-left:400px !important">
+         <table class="table" style="font-size:18px; margin:auto !important">
+             <thead>
+                 <tr class="danger">
+                     <th>Sno.</th>
+                    
+                     <th>Title</th>
+                     <th> Project Year</th>
+                     <th>Name</th>
+                     <th>Supervisor</th>
+                     <th>Department</th>
+                     <th>Faculty</th>
+                     <th>Date Submitted</th>
+                     <th>File</th>
+                     <th>Source Code </th>
+                     <th>Actions</th>
+                 </tr>
+             </thead>
+             <tbody>
+                 
+                 {% for order in page_obj.object_list  %}
+                 <tr class="success" colspan="3">
+                     <td>{{forloop.counter}}</td>
+                     
+                     <td>{{order.title}}</td>
+                     <td>{{order.year}}
+                     <td>{{order.name}}</td>
+                     <td>{{order.supervisor}}</td>
+                     <td>{{order.department}}</td>
+                     <td>{{order.faculty}}</td>
+                     <td>{{order.date}}</td>
+                     <td>{{order.source_code}}
+                      {% comment %} <br>
+                    <a href = "{{order.source_code.url}}"> save</a> {% endcomment %}
+                     </td>
+                     <td>{{order.file}}<br>
+                    <a href = "{{order.file.url}}"> save</a></td>
+                     <td class="info"> <a href="{% url 'update' order.id %}" style="display:inline;margin:3px">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                            <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                          </svg> </a> 
+                     
+                           
+                                <span class = "badge badge-danger"
+                                style="cursor:pointer"
+                                hx-delete = "{% url 'delete' order.id %}"
+                                hx-target = "body"
+                                hx-confirm = "Are you sure you want to delete">
+                                
+                               X
+                                </span>
+                           
+                    
+                    
+                    </td>
+                 </tr>
+ 
+                 {% endfor %}
+                
+            
+         {% if page_obj.has_other_pages %}
+         <ul class="pagination">
+           {% if page_obj.has_previous %}
+             <li><span id="prev" hx-get="{% url 'projects' %}?page={{ page_obj.previous_page_number }}"
+              hx-target="body"
+              hx-swap="outerHTML">&laquo;</span></li>
+           {% else %}
+             <li class="disabled"><span>&laquo;</span></li>
+           {% endif %}
+           {% for i in page_obj.paginator.page_range %}
+             {% if page_obj.number == i %}
+               <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+             {% else %}
+               <li><span id="prev" hx-get="{% url 'projects' %}?page={{ i }}"
+                hx-target="body"
+                hx-swap="outerHTML">{{ i }}</span></li>
+             {% endif %}
+           {% endfor %}
+           {% if page_obj.has_next %}
+           <li><span id="prev" hx-get="{% url 'projects' %}?page={{ page_obj.next_page_number }}"
+            hx-target="body"
+            hx-swap="outerHTML">&raquo;</span></li>
+           {% else %}
+             <li class="disabled"><span>&raquo;</span></li>
+           {% endif %}
+         </ul>
+       {% endif %}
+
+      </tbody>
+ 
+    </table>
+    </div>
+ </div>
+ 
+
+        {% endblock %}

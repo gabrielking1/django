@@ -1,0 +1,59 @@
+{% extends 'Persons/base.html' %} 
+{%load widget_tweaks%}
+{% block content %}
+<div class="info">
+<form method="POST" id="personForm" data-cities-url="{% url 'ajax_load_cities' %}" enctype="multipart/form-data" >
+    {% csrf_token %}
+    {{form.name.label_tag}}
+    {% render_field form.name class+="form-control" %} 
+    {{form.supervisor.label_tag}}
+    {% render_field form.supervisor class+="form-control" %}
+
+    {{form.title.label_tag}}
+    {% render_field form.title class+="form-control" %}
+
+    {{form.year.label_tag}}
+    {% render_field form.year class+="form-control" %}
+
+    {{form.file.label_tag}}
+    {% render_field form.file class+="form-control" %}
+    
+    <label for="course">Faculty</label>
+{% render_field form.faculty class+="form-control" hx-get="/module" hx-target="#id_modules" placeholder="Your Faculty" %}
+
+
+<label for="modules">Department</label>
+{% render_field form.department class+="form-control"  placeholder="Your department" %}
+    <input type="submit" value="Submit">
+</form>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    $("#id_faculty").change(function () {
+        const url = $("#personForm").attr("data-cities-url");  // get the url of the `load_cities` view
+        const facultyId = $(this).val();  // get the selected faculty ID from the HTML input
+
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+            data: {
+                'faculty_id': facultyId       // add the faculty id to the GET parameters
+            },
+            success: function (data) {   // `data` is the return of the `load_cities` view function
+                $("#id_department").html(data);  // replace the contents of the department input with the data that came from the server
+                /*
+
+                let html_data = '<option value="">---------</option>';
+                data.forEach(function (department) {
+                    html_data += `<option value="${department.id}">${department.name}</option>`
+                });
+                console.log(html_data);
+                $("#id_department").html(html_data);
+
+                */
+            }
+        });
+
+    });
+</script>
+
+{% endblock %}
